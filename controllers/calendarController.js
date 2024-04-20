@@ -55,6 +55,31 @@ exports.saveEventData = (req, res, next)=>{
 }
 
 
+exports.updateEventData = (req, res, next)=>{
+
+    let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    //console.log(1, eventList);
+    if(req.body.eventId != 0){
+        let eventData = eventList.find((val)=>{ return val.id == req.body.eventId});
+
+        eventData.status = 1;
+        console.log(eventData);
+
+
+        //eventList = eventList.filter((val)=>{ return val.id != req.body.eventId});
+
+        //eventList.push(eventData);
+        //console.log(2, eventList);
+    }
+
+    fs.writeFile(fileName, JSON.stringify(eventList), function writeJSON(err) {
+        if (err) return console.log(err);
+    });
+      
+    return res.end(JSON.stringify(eventList));
+}
+
+
 exports.deleteEventData = (req, res, next)=>{
 
     let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
