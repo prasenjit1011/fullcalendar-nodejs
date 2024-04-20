@@ -1,38 +1,18 @@
 const fs = require('fs');
 const fileName = 'public/eventList.json';
-const events = [
-    {
-        id: 'a',
-        title: 'my event 1',
-        status: 1,
-        start: '2024-04-16'
-    }
-];
-
 
 exports.getEventData = (req, res, next)=>{
 
-    const data = [{name:'Prasenjit', age:42}, {name:'Rita', age:28}, {name:'Riyan', age:11}];
-    const filterData = data.filter((val)=>{ return val.age>15});
-    
-    //console.log(data);
-    //console.log(filterData);
-
-
-
     var eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
     return res.end(JSON.stringify(eventList));
-
 }
 
 
 exports.saveEventData = (req, res, next)=>{
 
     let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
-    //console.log(1, eventList);
     if(req.body.eventId != 0){
         eventList = eventList.filter((val)=>{ return val.id != req.body.eventId});
-        //console.log(2, eventList);
     }
 
 
@@ -58,18 +38,10 @@ exports.saveEventData = (req, res, next)=>{
 exports.updateEventData = (req, res, next)=>{
 
     let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
-    //console.log(1, eventList);
+
     if(req.body.eventId != 0){
         let eventData = eventList.find((val)=>{ return val.id == req.body.eventId});
-
         eventData.status = 1;
-        console.log(eventData);
-
-
-        //eventList = eventList.filter((val)=>{ return val.id != req.body.eventId});
-
-        //eventList.push(eventData);
-        //console.log(2, eventList);
     }
 
     fs.writeFile(fileName, JSON.stringify(eventList), function writeJSON(err) {
@@ -83,10 +55,8 @@ exports.updateEventData = (req, res, next)=>{
 exports.deleteEventData = (req, res, next)=>{
 
     let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
-    //console.log(1, eventList);
     if(req.body.eventId != 0){
         eventList = eventList.filter((val)=>{ return val.id != req.body.eventId});
-        //console.log(2, eventList);
     }
 
     fs.writeFile(fileName, JSON.stringify(eventList), function writeJSON(err) {
