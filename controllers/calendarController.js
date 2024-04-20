@@ -1,4 +1,5 @@
-
+const fs = require('fs');
+const fileName = 'public/eventList.json';
 const events = [
     {
         id: 'a',
@@ -11,23 +12,61 @@ const events = [
 
 exports.getEventData = (req, res, next)=>{
 
-    return res.end(JSON.stringify(events));
+    const data = [{name:'Prasenjit', age:42}, {name:'Rita', age:28}, {name:'Riyan', age:11}];
+    const filterData = data.filter((val)=>{ return val.age>15});
+    
+    //console.log(data);
+    //console.log(filterData);
+
+
+
+    var eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    return res.end(JSON.stringify(eventList));
 
 }
 
 
 exports.saveEventData = (req, res, next)=>{
 
-    let id = req.body.eventId != 0 ? req.body.eventId : parseInt(1000*Math.random())+''+new Date().getTime();
+    let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    //console.log(1, eventList);
+    if(req.body.eventId != 0){
+        eventList = eventList.filter((val)=>{ return val.id != req.body.eventId});
+        //console.log(2, eventList);
+    }
+
+
+    let id = req.body.eventId != 0 ? req.body.eventId : parseInt(parseInt(1000*Math.random())+''+new Date().getTime());
     let data = {
                 id: id,
                 title: req.body.eventTitle,
                 start: req.body.eventDate, 
-                status: 1,
+                status: 0
             };
 
-    events.push(data);
+    eventList.push(data);
+
+    fs.writeFile(fileName, JSON.stringify(eventList), function writeJSON(err) {
+      if (err) return console.log(err);
+      
+    });
     
-    return res.end(JSON.stringify(events));
+    return res.end(JSON.stringify(eventList));
 }
 
+
+exports.deleteEventData = (req, res, next)=>{
+
+    let eventList = JSON.parse(fs.readFileSync(fileName, 'utf8'));
+    //console.log(1, eventList);
+    if(req.body.eventId != 0){
+        eventList = eventList.filter((val)=>{ return val.id != req.body.eventId});
+        //console.log(2, eventList);
+    }
+
+    fs.writeFile(fileName, JSON.stringify(eventList), function writeJSON(err) {
+        if (err) return console.log(err);
+    });
+      
+    return res.end(JSON.stringify(eventList));
+}
